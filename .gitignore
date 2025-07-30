@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build outputs (keep source files, ignore built assets in root)
+/assets/
+/index.html
+/manifest.json
+/favicon.svg
+
+# Development
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
