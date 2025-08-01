@@ -307,16 +307,6 @@ function createMatrixRain() {
     setInterval(draw, 35);
 }
 
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    createParticles();
-    setTimeout(typeWriter, 1000);
-    createGlitchEffect();
-    initializeSkillsNavigation();
-    // Counter animation will be triggered by intersection observer
-    // createMatrixRain(); // Uncomment for matrix effect
-});
-
 // Skills Navigation System
 function initializeSkillsNavigation() {
     const navItems = document.querySelectorAll('.skill-nav-item');
@@ -346,22 +336,6 @@ function initializeSkillsNavigation() {
         });
     });
 }
-
-// Add CSS for glitch effect
-const glitchCSS = `
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
-}
-`;
-
-const style = document.createElement('style');
-style.textContent = glitchCSS;
-document.head.appendChild(style);
 
 // Performance optimization
 let ticking = false;
@@ -403,4 +377,368 @@ function preloadResources() {
     });
 }
 
-preloadResources();
+// Theme Toggle Functionality
+class ThemeToggle {
+    constructor() {
+        this.currentTheme = 'dark';
+        this.toggle = null;
+        this.init();
+    }
+
+    init() {
+        // Get saved theme from localStorage or default to dark
+        this.currentTheme = localStorage.getItem('theme') || 'dark';
+        
+        // Apply saved theme
+        this.applyTheme(this.currentTheme);
+        
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.setupToggle();
+            });
+        } else {
+            this.setupToggle();
+        }
+    }
+
+    setupToggle() {
+        this.toggle = document.getElementById('themeToggle');
+        if (!this.toggle) {
+            console.log('Theme toggle element not found - creating one');
+            this.createThemeToggle();
+            return;
+        }
+
+        // Set initial toggle state
+        this.updateToggleState();
+
+        // Add click event listener
+        this.toggle.addEventListener('click', () => {
+            this.switchTheme();
+        });
+
+        // Add keyboard support
+        this.toggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.switchTheme();
+            }
+        });
+
+        // Add smooth transition class after initial setup
+        setTimeout(() => {
+            document.body.classList.add('theme-transitions');
+        }, 100);
+    }
+
+    createThemeToggle() {
+        // Create theme toggle button and add to navigation
+        const navContainer = document.querySelector('.nav-container');
+        if (!navContainer) return;
+
+        const themeToggleBtn = document.createElement('button');
+        themeToggleBtn.id = 'themeToggle';
+        themeToggleBtn.className = 'theme-toggle';
+        themeToggleBtn.setAttribute('aria-label', 'Toggle theme');
+        themeToggleBtn.innerHTML = `
+            <i class="fas fa-sun"></i>
+            <i class="fas fa-moon"></i>
+        `;
+
+        // Insert before hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        navContainer.insertBefore(themeToggleBtn, hamburger);
+
+        this.toggle = themeToggleBtn;
+        this.setupToggle();
+    }
+
+    switchTheme() {
+        const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+        this.currentTheme = newTheme;
+        
+        // Apply theme with animation
+        this.applyTheme(newTheme);
+        
+        // Save to localStorage
+        localStorage.setItem('theme', newTheme);
+        
+        // Update toggle state
+        this.updateToggleState();
+        
+        // Trigger custom event for other components
+        document.dispatchEvent(new CustomEvent('themeChanged', {
+            detail: { theme: newTheme }
+        }));
+
+        // Add haptic feedback on supported devices
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    }
+
+    applyTheme(theme) {
+        // Apply theme to document
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // Update meta theme-color for mobile browsers
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', 
+                theme === 'light' ? '#ffffff' : '#0a0a0f'
+            );
+        }
+
+        // Smooth transition for particles
+        this.updateParticleColors(theme);
+    }
+
+    updateToggleState() {
+        if (!this.toggle) return;
+        
+        if (this.currentTheme === 'light') {
+            this.toggle.classList.add('light');
+            this.toggle.setAttribute('aria-label', 'Switch to dark theme');
+        } else {
+            this.toggle.classList.remove('light');
+            this.toggle.setAttribute('aria-label', 'Switch to light theme');
+        }
+    }
+
+    updateParticleColors(theme) {
+        // Update particle colors based on theme
+        const particles = document.querySelectorAll('.particle');
+        particles.forEach(particle => {
+            if (theme === 'light') {
+                // Slightly more visible particles in light theme
+                particle.style.opacity = '0.6';
+            } else {
+                // Default opacity for dark theme
+                particle.style.opacity = '0.8';
+            }
+        });
+    }
+
+    // Method to programmatically set theme
+    setTheme(theme) {
+        if (theme === 'light' || theme === 'dark') {
+            this.currentTheme = theme;
+            this.applyTheme(theme);
+            this.updateToggleState();
+            localStorage.setItem('theme', theme);
+        }
+    }
+
+    // Method to get current theme
+    getTheme() {
+        return this.currentTheme;
+    }
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        createParticles();
+        setTimeout(typeWriter, 1000);
+        createGlitchEffect();
+        initializeSkillsNavigation();
+        
+        // Initialize theme toggle
+        const themeToggle = new ThemeToggle();
+        window.themeToggle = themeToggle;
+        
+        preloadResources();
+        
+        // Add all CSS styles
+        addAllStyles();
+        
+    } catch (error) {
+        console.error('Error initializing scripts:', error);
+    }
+});
+
+// Function to add all CSS styles safely
+function addAllStyles() {
+    // Add glitch effect CSS
+    const glitchCSS = `
+    @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+    }
+    `;
+    addStyleSheet('glitch-styles', glitchCSS);
+
+    // Add theme transition CSS
+    const themeTransitionsCSS = `
+    .theme-transitions,
+    .theme-transitions *,
+    .theme-transitions *:before,
+    .theme-transitions *:after {
+        transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .theme-transitions .particle {
+        transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .theme-toggle {
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .theme-toggle:hover {
+        border-color: var(--primary-color);
+        background: rgba(0, 102, 255, 0.1);
+    }
+
+    .theme-toggle i {
+        position: absolute;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        color: var(--text-primary);
+    }
+
+    .theme-toggle .fa-sun {
+        opacity: 0;
+        transform: rotate(180deg) scale(0.5);
+    }
+
+    .theme-toggle .fa-moon {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+
+    .theme-toggle.light .fa-sun {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+
+    .theme-toggle.light .fa-moon {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0.5);
+    }
+    `;
+    addStyleSheet('theme-styles', themeTransitionsCSS);
+
+    // Add screen reader CSS
+    const srOnlyCSS = `
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+    `;
+    addStyleSheet('sr-only-styles', srOnlyCSS);
+
+    // Add light theme CSS variables
+    const lightThemeCSS = `
+    [data-theme="light"] {
+        --primary-color: #0066ff;
+        --primary-dark: #0052cc;
+        --primary-light: #3385ff;
+        --secondary-color: #00d4aa;
+        --accent-color: #ff6b35;
+        --warning-color: #ffa726;
+        --dark-bg: #ffffff;
+        --dark-secondary: #f8f9fa;
+        --dark-tertiary: #e9ecef;
+        --text-primary: #212529;
+        --text-secondary: rgba(33, 37, 41, 0.8);
+        --text-muted: rgba(33, 37, 41, 0.6);
+    }
+
+    [data-theme="light"] .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="light"] .particle {
+        opacity: 0.4 !important;
+    }
+
+    [data-theme="light"] .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(0, 102, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 102, 255, 0.05) 1px, transparent 1px);
+    }
+    `;
+    addStyleSheet('light-theme-styles', lightThemeCSS);
+}
+
+// Helper function to safely add stylesheets
+function addStyleSheet(id, css) {
+    // Remove existing stylesheet with same ID
+    const existing = document.getElementById(id);
+    if (existing) {
+        existing.remove();
+    }
+
+    const styleElement = document.createElement('style');
+    styleElement.id = id;
+    styleElement.textContent = css;
+    document.head.appendChild(styleElement);
+}
+
+// Listen for system theme changes
+if (window.matchMedia) {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    
+    mediaQuery.addEventListener('change', (e) => {
+        // Only auto-switch if user hasn't manually set a theme
+        if (!localStorage.getItem('theme') && window.themeToggle) {
+            window.themeToggle.setTheme(e.matches ? 'light' : 'dark');
+        }
+    });
+}
+
+// Optional: Add theme toggle to keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + Shift + T to toggle theme
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        if (window.themeToggle) {
+            window.themeToggle.switchTheme();
+        }
+    }
+});
+
+// Add theme change announcement for screen readers
+document.addEventListener('themeChanged', (e) => {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'sr-only';
+    announcement.textContent = `Theme changed to ${e.detail.theme} mode`;
+    document.body.appendChild(announcement);
+    
+    setTimeout(() => {
+        if (document.body.contains(announcement)) {
+            document.body.removeChild(announcement);
+        }
+    }, 1000);
+});
