@@ -178,14 +178,17 @@
     <div class="particles-container" id="particles"></div>
 
         <!-- Navigation -->
+        <!-- Navigation -->
         <div class="nav-container">
-        <div class="nav-logo">
+        <div class="nav-inner">
+            <div class="nav-logo">
             <div class="logo-icon">
                 <img src="/Nikhil_Portfolio/image.png" alt="Nikhileswar Reddy C" class="logo-profile-pic">
             </div>
             <span class="logo-text">NRC</span>
-        </div>
-        <ul class="nav-menu" id="navMenu">
+            </div>
+
+            <ul class="nav-menu" id="navMenu">
             <li><a href="#home" class="nav-link" data-section="home">Home</a></li>
             <li><a href="#about" class="nav-link" data-section="about">About</a></li>
             <li><a href="#experience" class="nav-link" data-section="experience">Experience</a></li>
@@ -194,8 +197,9 @@
             <li><a href="#skills" class="nav-link" data-section="skills">Skills</a></li>
             <li><a href="#certifications" class="nav-link" data-section="certifications">Certifications</a></li>
             <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
-        </ul>
-        <div class="nav-actions">
+            </ul>
+
+            <div class="nav-actions">
             <!-- Theme Toggle Button -->
             <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Switch to light theme">
                 <i class="fas fa-moon icon moon-icon"></i>
@@ -206,8 +210,10 @@
                 <span></span>
                 <span></span>
             </div>
+            </div>
         </div>
-    </div>
+        </div>
+
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -238,26 +244,43 @@
                     Cybersecurity professional with 4+ years of IT experience, including 2+ years of specialization in 
                     threat detection, data loss prevention, incident response, digital forensics, and vulnerability management.
                 </p>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-content">
-                            <div class="stat-number" data-target="4">0</div>
-                            <div class="stat-label">Years Experience</div>
+                <div class="hero-stats" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                    <!-- Experience -->
+                    <div class="stat-item" style="flex: 1 1 45%; min-width: 250px;">
+                        <div class="stat-content" style="display: flex; justify-content: flex-start;">
+                        <div class="stat-line" style="display: flex; gap: 0.4rem; justify-content: flex-start; white-space: normal;">
+                            <span class="stat-number" data-target="4">0</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-content">
-                            <div class="stat-number" data-target="4">0</div>
-                            <div class="stat-label">Certifications</div>
+
+                    <!-- Certifications -->
+                    <div class="stat-item" style="flex: 1 1 45%; min-width: 250px;">
+                        <div class="stat-content" style="display: flex; justify-content: flex-start;">
+                        <div class="stat-line" style="display: flex; gap: 0.4rem; justify-content: flex-start; white-space: normal;">
+                            <span class="stat-number" data-target="4">0</span>
+                            <span class="stat-label">Certifications</span>
+                        </div>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-content">
-                            <div class="stat-number" data-target="300000">0</div>
-                            <div class="stat-label">Endpoints Secured</div>
+
+                    <!-- Endpoints -->
+                    <div class="stat-item" style="flex: 1 1 100%; min-width: 250px;">
+                        <div class="stat-content" style="display: flex; justify-content: flex-start;">
+                        <div class="stat-line" style="display: flex; gap: 0.4rem; justify-content: flex-start; white-space: normal;">
+                            <span class="stat-number" data-target="300000">0</span>
+                            <span class="stat-label">Endpoints Secured</span>
+                        </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+
+
+
+
+
+
                 <div class="hero-buttons">
                     <a href="#contact" class="btn btn-primary">
                         <span>Lets Connect</span>

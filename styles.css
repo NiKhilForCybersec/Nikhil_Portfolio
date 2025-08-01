@@ -332,6 +332,34 @@ body {
 }
 
 .nav-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    padding: 0 var(--spacing-md);
+    transition: background-color 0.3s ease;
+}
+
+/* Dark Theme (default) */
+[data-theme="dark"] .nav-container {
+    background-color: rgba(10, 10, 15, 0.85);
+}
+
+/* Light Theme */
+[data-theme="light"] .nav-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+
+/* Inner nav content stays centered with max width */
+.nav-inner {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-md);
@@ -589,14 +617,15 @@ body {
 
 .stat-item {
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-sm) var(--spacing-md); /* Reduced vertical padding */
-    text-align: left; /* Changed from center to left */
-    transition: all var(--transition-normal);
-    position: relative;
-    overflow: hidden;
+    border-radius: 15px; /* Reduced from too-rounded */
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    flex: 1 1 30%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* First two items - equal width in top row */
@@ -665,7 +694,15 @@ body {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     border-radius: 2px;
 }
-
+.stat-line {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
 .stat-label {
     font-size: 0.85rem; /* REDUCED: was 0.9rem */
     color: var(--text-secondary);
@@ -1734,7 +1771,7 @@ body {
 }
 
 .skill-tag {
-    background: rgba(0, 102, 255, 0.8);
+    background: rgba(0, 102, 255, 0.8); /* Blue */
     color: #ffffff;
     padding: 4px var(--spacing-xs);
     border-radius: 15px;
@@ -1746,6 +1783,16 @@ body {
     box-shadow: 0 2px 8px rgba(0, 102, 255, 0.4);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
+
+/* 🌞 Light Theme Override */
+[data-theme="light"] .skill-tag {
+    background: rgba(153, 246, 228, 0.85); /* Soft mint */
+    color: #003366; /* Dark text for readability */
+    border: 1px solid rgba(0, 102, 255, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    text-shadow: none;
+}
+
 
 .skill-tag:hover {
     background: rgba(0, 212, 170, 0.9);
@@ -2562,8 +2609,8 @@ body {
     .achievement-content {
         align-items: center;
     }
-     .stat-item {
-        flex: 1 1 auto;
+    .stat-item {
+        flex: 1 1 100% auto;
         min-width: 120px;
         max-width: 150px;
     }
